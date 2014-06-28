@@ -23,9 +23,9 @@ public class TestActivity extends Activity {
         setContentView(R.layout.image);  
         
         Button btn = (Button) findViewById(R.id.Button01);  
-        btn.setOnClickListener(new OnClickListener() {              //°´Å¥µã»÷µÄ¼àÌıÆ÷£¬¸ºÔğ¿ªÆôÏß³ÌÇëÇóserver·¢ËÍÊµÊ±ÊÓÆµ£¬flagÓÃ×÷½ÓÊÕµÄ¿ª¹Ø
+        btn.setOnClickListener(new OnClickListener() {              //æŒ‰é’®ç‚¹å‡»çš„ç›‘å¬å™¨ï¼Œè´Ÿè´£å¼€å¯çº¿ç¨‹è¯·æ±‚serverå‘é€å®æ—¶è§†é¢‘ï¼Œflagç”¨ä½œæ¥æ”¶çš„å¼€å…³
             public void onClick(View v) {
-            	System.out.println("°´Å¥±»µã»÷ÁË~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+            	System.out.println("æŒ‰é’®è¢«ç‚¹å‡»äº†~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
             	String android_id = Secure.getString(TestActivity.this.getContentResolver(),Secure.ANDROID_ID);
             	System.out.println(android_id+"----------------------------+++++++++++++---------------------------");
             	

@@ -42,7 +42,7 @@ public class ServerThread implements Runnable{
 		//frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 
-		timer = new Timer();                                                          //ºÏ³ÉÊÓÆµµÄÖÜÆÚ¼ÆÊ±Æ÷
+		timer = new Timer();                                                          //åˆæˆè§†é¢‘çš„å‘¨æœŸè®¡æ—¶å™¨
 		timer.schedule(new TimerTask() {
 
 			@Override
@@ -59,20 +59,20 @@ public class ServerThread implements Runnable{
 				String path = "G:/video2/" + androidName + "/";
 				File file =new File(path);
 				if(!file.exists()){
-					//Èç¹ûÒª´´½¨µÄ¶à¼¶Ä¿Â¼²»´æÔÚ²ÅĞèÒª´´½¨¡£
+					//å¦‚æœè¦åˆ›å»ºçš„å¤šçº§ç›®å½•ä¸å­˜åœ¨æ‰éœ€è¦åˆ›å»ºã€‚
 				    file.mkdirs();
 		        }
-				String name = year + "_" + month + "_" + date + "@" + hour + "_" + minute   + "_" + second + ".mp4";                   //µÃµ½ÏµÍ³µ±Ç°Ê±¼ä£¬ÒÔ¸ÃÊ±¼ä×÷ÎªÊÓÆµÎÄ¼şµÄÃüÃû						
-				System.out.println("Í¼Æ¬»º´æµÄÊı¾İ´æÍ¼Æ¬ÊıÄ¿Îª£º   " + arrayList.size());
-				ScreenRecording sr = new ScreenRecording();                                           //µ÷ÓÃºÏ³ÉÊÓÆµµÄÀà
-				sr.makeVideo(arrayList, path, name, 5);                                  //ºÏ³ÉÊÓÆµµÄº¯Êı
+				String name = year + "_" + month + "_" + date + "@" + hour + "_" + minute   + "_" + second + ".mp4";                   //å¾—åˆ°ç³»ç»Ÿå½“å‰æ—¶é—´ï¼Œä»¥è¯¥æ—¶é—´ä½œä¸ºè§†é¢‘æ–‡ä»¶çš„å‘½å						
+				System.out.println("å›¾ç‰‡ç¼“å­˜çš„æ•°æ®å­˜å›¾ç‰‡æ•°ç›®ä¸ºï¼š   " + arrayList.size());
+				ScreenRecording sr = new ScreenRecording();                                           //è°ƒç”¨åˆæˆè§†é¢‘çš„ç±»
+				sr.makeVideo(arrayList, path, name, 5);                                  //åˆæˆè§†é¢‘çš„å‡½æ•°
 
-				// Çå³ıÊı×éÖĞµÄÊı¾İ£¬ÖØĞÂ»ñÈ¡Í¼Ïñ
-				arrayList.clear();                                                                    //Çå¿ÕarraylistµÄÊı¾İ£¬´ÓĞÂ»ñÈ¡Êı¾İ
+				// æ¸…é™¤æ•°ç»„ä¸­çš„æ•°æ®ï¼Œé‡æ–°è·å–å›¾åƒ
+				arrayList.clear();                                                                    //æ¸…ç©ºarraylistçš„æ•°æ®ï¼Œä»æ–°è·å–æ•°æ®
 			}
-		}, 15 * 1000, 15 * 1000);// µÚÒ»²ÎÊıÊÇÔËĞĞµÄ¶¯×÷£¬µÚ¶ş¸ö²ÎÊıÊÇµÈ´ı¶àÉÙÃë£¬µÚÈı¸ö²ÎÊıÊÇÖÜÆÚĞÔµÄÖØ¸´µÄÊ±¼ä
+		}, 15 * 1000, 15 * 1000);// ç¬¬ä¸€å‚æ•°æ˜¯è¿è¡Œçš„åŠ¨ä½œï¼Œç¬¬äºŒä¸ªå‚æ•°æ˜¯ç­‰å¾…å¤šå°‘ç§’ï¼Œç¬¬ä¸‰ä¸ªå‚æ•°æ˜¯å‘¨æœŸæ€§çš„é‡å¤çš„æ—¶é—´
 		
-		//System.out.println("Á¬½Ó³É¹¦!");
+		//System.out.println("è¿æ¥æˆåŠŸ!");
 		
 		try {
 			ObjectInputStream serverInputStream = new ObjectInputStream(socket.getInputStream());
@@ -86,7 +86,7 @@ public class ServerThread implements Runnable{
 					
 						byte[] bytes = (byte[])data.getData();
 						this.androidName = data.getPacketType();
-						//System.out.println("producerÊÇ£º " + androidId);
+						//System.out.println("produceræ˜¯ï¼š " + androidId);
 						/*if(i == 0){
 							ProducerBean producerBean = new ProducerBean();
 							producerBean.setAndroidName(androidName);
@@ -111,7 +111,7 @@ public class ServerThread implements Runnable{
 						
 						
 						if (i == 0) {
-							Thread myThread = new Thread(new MyThread());                                     //¼àÌıclientÇëÇóµÄÏß³Ì£¬Ö»Æô¶¯Ò»´Î          
+							Thread myThread = new Thread(new MyThread());                                     //ç›‘å¬clientè¯·æ±‚çš„çº¿ç¨‹ï¼Œåªå¯åŠ¨ä¸€æ¬¡          
 							/*try {
 								Thread.sleep(100);
 							} catch (InterruptedException e) {
@@ -170,14 +170,14 @@ public class ServerThread implements Runnable{
 		@Override
 		public void run() {
 			try {
-				objectOutputStream = new ObjectOutputStream(socket.getOutputStream());                                  //¶ÔÏóÁ÷
+				objectOutputStream = new ObjectOutputStream(socket.getOutputStream());                                  //å¯¹è±¡æµ
 				objectInputStream = new ObjectInputStream(socket.getInputStream());
 				ByteArrayOutputStream out = new ByteArrayOutputStream();
 				while(true){
-					ImageIO.write(image, "jpg", out);                                                                                             //½«ÊµÊ±Í¼Æ¬×ª»»³ÉÁ÷¶ÔÏó
+					ImageIO.write(image, "jpg", out);                                                                                             //å°†å®æ—¶å›¾ç‰‡è½¬æ¢æˆæµå¯¹è±¡
 					byte[] datas = out.toByteArray();
 					try {
-						PacketBean data = new PacketBean();                                                                             //ĞòÁĞ»¯µÄÀà
+						PacketBean data = new PacketBean();                                                                             //åºåˆ—åŒ–çš„ç±»
 						data.setData(datas);
 						data.setPacketType("sendshots");
 

@@ -1,13 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical" >
-
-   <SurfaceView
-	android:id="@+id/sView"
-	android:layout_width="fill_parent" 
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/loginForm"
+	android:orientation="vertical"
+	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
-	android:scaleType="fitCenter"/>
+	>
+	
+    <TextView
+        android:id="@+id/text_server_list"
+        android:layout_height="wrap_content"
+		android:layout_width="fill_parent"
+        android:layout_alignParentTop="true"
+        android:text="Servers List"
+        />
+    
+    <ListView
+        android:id="@+id/server_list" 
+        android:layout_height="wrap_content"
+		android:layout_width="fill_parent"
+        android:layout_below="@id/text_server_list"
+        />
+    
+    <LinearLayout 
+        android:id="@+id/btn_server_list"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true"
+		android:layout_centerHorizontal="true">
+        
+        <Button
+            android:id="@+id/btn_add_server"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Add Server" />
 
-</LinearLayout>
+        <Button
+            android:id="@+id/btn_del_server"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Del Server" />
+        
+	</LinearLayout>
+    
+	
+</RelativeLayout>
+

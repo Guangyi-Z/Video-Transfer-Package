@@ -35,9 +35,9 @@ public class RealTimeVideo extends Activity {
         super.onCreate(savedInstanceState);  
         setContentView(R.layout.image);  
   
-        imageView = (ImageView) findViewById(R.id.image01);          //°ó¶¨Í¼Æ¬½ÓÊÕºóÏÔÊ¾µÄ¿Ø¼ş
+        imageView = (ImageView) findViewById(R.id.image01);          //ç»‘å®šå›¾ç‰‡æ¥æ”¶åæ˜¾ç¤ºçš„æ§ä»¶
         Button btn = (Button) findViewById(R.id.Button01);  
-        btn.setOnClickListener(new OnClickListener() {              //°´Å¥µã»÷µÄ¼àÌıÆ÷£¬¸ºÔğ¿ªÆôÏß³ÌÇëÇóserver·¢ËÍÊµÊ±ÊÓÆµ£¬flagÓÃ×÷½ÓÊÕµÄ¿ª¹Ø
+        btn.setOnClickListener(new OnClickListener() {              //æŒ‰é’®ç‚¹å‡»çš„ç›‘å¬å™¨ï¼Œè´Ÿè´£å¼€å¯çº¿ç¨‹è¯·æ±‚serverå‘é€å®æ—¶è§†é¢‘ï¼Œflagç”¨ä½œæ¥æ”¶çš„å¼€å…³
             public void onClick(View v) {  
             	
             	if(flag){
@@ -53,7 +53,7 @@ public class RealTimeVideo extends Activity {
         
     }
     
-    Thread t=new Thread(new Runnable() {                         //ÇëÇóserver·¢ËÍÊµÊ±ÊÓÆµµÄÏß³Ì
+    Thread t=new Thread(new Runnable() {                         //è¯·æ±‚serverå‘é€å®æ—¶è§†é¢‘çš„çº¿ç¨‹
 		@Override
 		public void run() {
 			int i=0;
@@ -75,26 +75,26 @@ public class RealTimeVideo extends Activity {
             case 0:
             	Socket socket = null;  
                 try {
-                	System.out.println("µã»÷ÁËÕâ¸ö°´Å¥++++++++++++++");
+                	System.out.println("ç‚¹å‡»äº†è¿™ä¸ªæŒ‰é’®++++++++++++++");
     				socket = new Socket("192.168.253.1",9901);  
-    				System.out.println("Á¬½Ó·şÎñÆ÷¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£");
-    				ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());                        //´ÓsocketÁ÷ÖĞ½ÓÊÕÊı¾İ
+    				System.out.println("è¿æ¥æœåŠ¡å™¨ã€‚ã€‚ã€‚ã€‚ã€‚ã€‚ã€‚ã€‚ã€‚ã€‚ã€‚ã€‚ã€‚ã€‚ã€‚");
+    				ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());                        //ä»socketæµä¸­æ¥æ”¶æ•°æ®
     				ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-    				//System.out.println("µÃµ½Í¼Æ¬¡£¡£1111111111111¡£¡£");                               
+    				//System.out.println("å¾—åˆ°å›¾ç‰‡ã€‚ã€‚1111111111111ã€‚ã€‚");                               
     				PacketBean data2 = new PacketBean("1","server");
     				try {
-    					PacketBean dataBean = null;                                                                                   //½«Á÷ÖĞÊı¾İ¶Á³ö²¢½«ÆäĞòÁĞ»¯
+    					PacketBean dataBean = null;                                                                                   //å°†æµä¸­æ•°æ®è¯»å‡ºå¹¶å°†å…¶åºåˆ—åŒ–
     					while((dataBean = (PacketBean) objectInputStream.readObject()) != null){
-    						System.out.println("×ª»»ĞòÁĞ»¯¸ñÊ½Í¼Æ¬³É¹¦~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+    						System.out.println("è½¬æ¢åºåˆ—åŒ–æ ¼å¼å›¾ç‰‡æˆåŠŸ~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     						byte[] bytes = (byte[]) dataBean.getData();
-    						System.out.println("´Óserver¶Ë·¢ËÍ¹ıÀ´µÄ×Ö·û´®£º " + dataBean.getPacketType());
-    						Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);                         //Éú³ÉbitmapÀàĞÍµÄÊı¾İ
+    						System.out.println("ä»serverç«¯å‘é€è¿‡æ¥çš„å­—ç¬¦ä¸²ï¼š " + dataBean.getPacketType());
+    						Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);                         //ç”Ÿæˆbitmapç±»å‹çš„æ•°æ®
     						String path = Environment.getExternalStorageState()+File.separator+"temp";
     						//savaBitmap(path, System.currentTimeMillis()+".png", bmp);
-    						System.out.println("ÏÔÊ¾Í¼Æ¬ÁË¡£¡£¡£¡£¡£¡£");
-    						Log.e("save", "±£´æÍ¼Æ¬µ½¾ø¶ÔÂ·¾¶ÏÂ¡£¡£¡£¡£¡£¡£¡£¡£");
-    						imageView.setImageBitmap(bmp);                                                                               //ÏÔÊ¾Í¼Æ¬£¬ÒÔĞÎ³ÉÊÓÆµ
-    						System.out.println("³É¹¦£¤£¤£¤£¤£¤£¤£¤£¤£¤£¤£¤£¤£¤£¤£¤£¤£¤£¤£¤");
+    						System.out.println("æ˜¾ç¤ºå›¾ç‰‡äº†ã€‚ã€‚ã€‚ã€‚ã€‚ã€‚");
+    						Log.e("save", "ä¿å­˜å›¾ç‰‡åˆ°ç»å¯¹è·¯å¾„ä¸‹ã€‚ã€‚ã€‚ã€‚ã€‚ã€‚ã€‚ã€‚");
+    						imageView.setImageBitmap(bmp);                                                                               //æ˜¾ç¤ºå›¾ç‰‡ï¼Œä»¥å½¢æˆè§†é¢‘
+    						System.out.println("æˆåŠŸï¿¥ï¿¥ï¿¥ï¿¥ï¿¥ï¿¥ï¿¥ï¿¥ï¿¥ï¿¥ï¿¥ï¿¥ï¿¥ï¿¥ï¿¥ï¿¥ï¿¥ï¿¥ï¿¥");
     						
     						objectOutputStream.writeObject(data2);
     						objectOutputStream.flush();
@@ -114,7 +114,7 @@ public class RealTimeVideo extends Activity {
                 } 
          	   break;
             case 1:
-            	System.out.println("²»ÇëÇó·şÎñÆ÷ÁË");
+            	System.out.println("ä¸è¯·æ±‚æœåŠ¡å™¨äº†");
             	break;
 			}
         }

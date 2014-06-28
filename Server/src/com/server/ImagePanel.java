@@ -37,11 +37,11 @@ class ImagePanel extends JPanel {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		if (image == null) {
-			// System.out.println("没有图像~~~~~~~~~~");
+			// System.out.println("娌℃湁鍥惧儚~~~~~~~~~~");
 			return;
 		}
 		g.drawImage(image, 0, 0, null);
-		// System.out.println("有图像出来的~~~~~~~~~~~");
+		// System.out.println("鏈夊浘鍍忓嚭鏉ョ殑~~~~~~~~~~~");
 	}
 
 }

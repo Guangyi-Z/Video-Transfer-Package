@@ -26,10 +26,10 @@ public class TestActivity2 extends Activity {
         setContentView(R.layout.image);  
         
         Button btn = (Button) findViewById(R.id.Button01);  
-        btn.setOnClickListener(new OnClickListener() {              //°´Å¥µã»÷µÄ¼àÌıÆ÷£¬¸ºÔğ¿ªÆôÏß³ÌÇëÇóserver·¢ËÍÊµÊ±ÊÓÆµ£¬flagÓÃ×÷½ÓÊÕµÄ¿ª¹Ø
+        btn.setOnClickListener(new OnClickListener() {              //æŒ‰é’®ç‚¹å‡»çš„ç›‘å¬å™¨ï¼Œè´Ÿè´£å¼€å¯çº¿ç¨‹è¯·æ±‚serverå‘é€å®æ—¶è§†é¢‘ï¼Œflagç”¨ä½œæ¥æ”¶çš„å¼€å…³
             public void onClick(View v) {
             	try {
-            		System.out.println("°´Å¥±»µã»÷ÁË~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+            		System.out.println("æŒ‰é’®è¢«ç‚¹å‡»äº†~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
                 	Socket socket = new Socket("192.168.191.4", 10000);
                     
                     OutputStream os = socket.getOutputStream();
@@ -41,8 +41,8 @@ public class TestActivity2 extends Activity {
                         String time = android_id+"---" + i;
                         try {
                         	System.out.println(time);
-                            bw.write(time); // ·¢ËÍµ±Ç°Ê±¼äµÄ×Ö·û´®
-                            bw.newLine(); // ĞèÒª»»ĞĞ·û×öreadLine()
+                            bw.write(time); // å‘é€å½“å‰æ—¶é—´çš„å­—ç¬¦ä¸²
+                            bw.newLine(); // éœ€è¦æ¢è¡Œç¬¦åšreadLine()
                             bw.flush(); 
                             i++;
                             Thread.sleep(1000);
