@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="mini_margin">2dp</dimen>
+    <dimen name="little_margin">4dp</dimen>
+    <dimen name="middle_margin">6dp</dimen>
+    <dimen name="large_margin">8dp</dimen>
+    <dimen name="large_marginx">10dp</dimen>
+    <dimen name="xlarge_margin">12dp</dimen>
+    <dimen name="xlarge_marginx">14dp</dimen>
+    <dimen name="xxlarge_margin">16dp</dimen>
+    <dimen name="xxlarge_marginx">18dp</dimen>
+    <dimen name="xxxlarge_margin">20dp</dimen>
+    <dimen name="xxxlarge_marginx">22dp</dimen>
+    <dimen name="xxxxlarge_margin">24dp</dimen>
+    <dimen name="xxxxlarge_marginx">28dp</dimen>
+    <dimen name="xxxxxlarge_margin">32dp</dimen>
+      <dimen name="single_item_height">48dp</dimen>
+    
+    <!-- 字体大小google标准 -->
+    <dimen name="text_mmicro">10sp</dimen>
+    <dimen name="text_micro">12sp</dimen>
+    <dimen name="text_small">14sp</dimen>
+    <dimen name="text_medium_x">16sp</dimen>
+    <dimen name="text_medium">18sp</dimen>
+    <dimen name="text_medium_xx">20sp</dimen>
+    <dimen name="text_large">22sp</dimen>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="compose_author_item_height">108dp</dimen>
+    <dimen name="compose_support_height">87dp</dimen>
+    <dimen name="reply_avatar">35dp</dimen>
+    <dimen name="text_micro1">13sp</dimen>
+
+
+</resources>

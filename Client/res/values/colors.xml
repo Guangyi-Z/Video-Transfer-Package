@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="transparent">#00000000</color>
+    <color name="actionbar_background">#a066c2</color>
+    <color name="white_background">#ffffff</color>
+    <color name="grey_background">#fafafa</color>
+    <color name="white_text">#ffffff</color>
+    <color name="grey_text">#999999</color>
+    <color name="black_text">#333333</color>
+    <color name="purple">#a066c2</color>
+
+</resources>

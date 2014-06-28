@@ -3,17 +3,9 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" >
-    
-    <Button 
-       android:layout_height="wrap_content"
-       android:layout_width="wrap_content"
-       android:id="@+id/Button01"
-       android:text="button"
-       />
-
    <ImageView 
        android:layout_width="wrap_content"
        android:layout_height="wrap_content"
-       android:id="@+id/image01"/>
+       android:id="@+id/imgv_realTime"/>
    
 </LinearLayout>

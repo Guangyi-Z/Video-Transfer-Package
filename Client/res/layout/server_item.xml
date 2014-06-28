@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/single_item_height" 
+    android:minHeight="@dimen/single_item_height">
+
+    <TextView
+        android:id="@+id/tv_server_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/xxlarge_margin"
+        android:text="服务器名"
+        android:textColor="@color/black_text"
+        android:textSize="@dimen/text_medium" />
+
+    <TextView
+        android:id="@+id/tv_server_ip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/tv_server_name"
+        android:layout_marginLeft="@dimen/xxlarge_margin"
+        android:text="服务器IP"
+        android:textColor="@color/black_text"
+        android:textSize="@dimen/text_medium" />
+    <TextView
+        android:id="@+id/tv_server_port"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/tv_server_ip"
+        android:layout_marginLeft="@dimen/xxlarge_margin"
+        android:text="服务器port"
+        android:textColor="@color/black_text"
+        android:textSize="@dimen/text_medium" />
+</RelativeLayout>
