@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,10 +33,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.androidsocket.R;
-import com.client.model.PacketBean;
-import com.client.model.ProducerBeans;
-import com.client.model.ServerBeans;
 import com.client.view.CustomDialog;
+import com.model.PacketBean;
+import com.model.ProducerBean;
+import com.model.ServerBeans;
 
 /**
  * 
@@ -48,15 +49,16 @@ public class ProducerListActivity extends Activity implements
 	private Context mContext;
 	private ListView mListView;
 	private MyAdapter mAdapter;
-	private List<ProducerBeans> mProducerList = new ArrayList<ProducerBeans>();
+	private List<ProducerBean> mProducerList = new ArrayList<ProducerBean>();
 	private ServerBeans mServerBeans;
 	private ActionBar mActionBar;
 
-	private Handler myHandler = new Handler(){
+	private Handler myHandler = new Handler() {
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
 			case 0:
-				//刷新Producer列表
+				// 刷新Producer列表
+				mListView.setAdapter(mAdapter);
 				mAdapter.notifyDataSetChanged();
 				break;
 			default:
@@ -64,6 +66,7 @@ public class ProducerListActivity extends Activity implements
 			}
 		};
 	};
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -99,47 +102,56 @@ public class ProducerListActivity extends Activity implements
 	}
 
 	// 链接服务器，并接受服务器返回的Producer列表
-	private void requestLinkServer(ServerBeans serverBeans) {
-		ObjectInputStream is = null;
-		ObjectOutputStream os = null;
-		try {
-			Socket socket = new Socket(serverBeans.getIp(),
-					serverBeans.getPort());
-			
-			//请求获取Producer列表
-			os = new ObjectOutputStream(socket.getOutputStream());
-			PacketBean packetBean = new PacketBean();
-			packetBean.setPacketType(PacketBean.PRODUCER_LIST);
-			os.writeObject(packetBean);
-			os.flush();
+	private void requestLinkServer(final ServerBeans serverBeans) {
+		new Thread(new Runnable() {
 
-			//获取Server返回的Producer列表
-			is = new ObjectInputStream(socket.getInputStream());
-			packetBean = (PacketBean) is.readObject();
-			if (packetBean != null) {
-				if (packetBean.getPacketType() == PacketBean.PRODUCER_LIST) {
-					mProducerList = (List<ProducerBeans>) packetBean.getData();
-					myHandler.sendEmptyMessage(0);
+			@Override
+			public void run() {
+				ObjectInputStream is = null;
+				ObjectOutputStream os = null;
+				try {
+					Log.e(TAG,"ip:"+ serverBeans.getIp()+" port:"+serverBeans.getPort());
+					Socket socket = new Socket(serverBeans.getIp(), serverBeans
+							.getPort());
+
+					// 请求获取Producer列表
+					os = new ObjectOutputStream(socket.getOutputStream());
+					PacketBean packetBean = new PacketBean();
+					packetBean.setPacketType(PacketBean.PRODUCER_LIST);
+					os.writeObject(packetBean);
+					os.flush();
+
+					// 获取Server返回的Producer列表
+					is = new ObjectInputStream(socket.getInputStream());
+					packetBean = (PacketBean) is.readObject();
+					if (packetBean != null) {
+						if (packetBean.getPacketType() == PacketBean.PRODUCER_LIST) {
+							mProducerList = (List<ProducerBean>) packetBean
+									.getData();
+							Log.e(TAG, mProducerList.toString());
+							myHandler.sendEmptyMessage(0);
+						}
+					}
+				} catch (UnknownHostException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				} finally {
+					try {
+						if (is != null) {
+							is.close();
+						}
+						if (os != null) {
+							os.close();
+						}
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
 			}
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (is != null) {
-					is.close();
-				}
-				if (os != null) {
-					os.close();
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
+		}).start();
 	}
 
 	/**
@@ -148,7 +160,12 @@ public class ProducerListActivity extends Activity implements
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View view, int position,
 			long id) {
-
+		ProducerBean producerBean = mProducerList.get(position);
+		if(producerBean!=null){
+			Intent intent = new Intent(this,RealTimeVideoActivity.class);
+			intent.putExtra("producerBean", producerBean);
+			startActivity(intent);
+		}
 	}
 
 	@Override
@@ -191,19 +208,19 @@ public class ProducerListActivity extends Activity implements
 				convertView = mLayoutInflater.inflate(R.layout.producer_item,
 						null);
 				holderView.tvProducerIP = (TextView) convertView
-						.findViewById(R.id.tv_server_ip);
+						.findViewById(R.id.tv_producer_ip);
 				holderView.tvProducerName = (TextView) convertView
-						.findViewById(R.id.tv_server_name);
+						.findViewById(R.id.tv_producer_name);
 				holderView.tvProducerPort = (TextView) convertView
-						.findViewById(R.id.tv_server_port);
+						.findViewById(R.id.tv_producer_port);
 				convertView.setTag(holderView);
 			} else {
 				holderView = (HolderView) convertView.getTag();
 			}
-			ProducerBeans producerBeans = mProducerList.get(position);
-			holderView.tvProducerIP.setText(producerBeans.getIp());
-			holderView.tvProducerName.setText(producerBeans.getName());
-			holderView.tvProducerPort.setText(producerBeans.getPort() + "");
+			ProducerBean producerBean = mProducerList.get(position);
+			holderView.tvProducerIP.setText(producerBean.getIp());
+			holderView.tvProducerName.setText(producerBean.getAndroidName());
+			holderView.tvProducerPort.setText(producerBean.getPort() + "");
 			return convertView;
 		}
 

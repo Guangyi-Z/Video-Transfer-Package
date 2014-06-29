@@ -9,24 +9,22 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.androidsocket.R;
-import com.client.model.ProducerBeans;
-import com.test.PacketBean;
-
-import android.R.integer;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
+
+import com.androidsocket.R;
+import com.model.ProducerBean;
+import com.model.PacketBean;
 
 /**
  * 
@@ -37,7 +35,7 @@ public class RealTimeVideoActivity extends Activity {
 	private final static String TAG = "RealTimeVideoActivity";
 	private final static int MAX_CACHE_COUNT = 10;
 	private final static int MSG_SHOW_IMAGE = 100;
-	private ProducerBeans mProducerBeans;
+	private ProducerBean mProducerBean;
 	private ImageView imageView = null;
 	private List<Bitmap> mBitmaps = new ArrayList<Bitmap>();
 
@@ -47,6 +45,7 @@ public class RealTimeVideoActivity extends Activity {
 			case MSG_SHOW_IMAGE:
 				if (!mBitmaps.isEmpty()) {
 					Bitmap bitmap = mBitmaps.remove(0);
+					bitmap = rotate(bitmap, 90);
 					imageView.setImageBitmap(bitmap);
 				}
 				break;
@@ -60,6 +59,8 @@ public class RealTimeVideoActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+     	getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_realtime_video);
 		initView();
 		initData();
@@ -79,8 +80,9 @@ public class RealTimeVideoActivity extends Activity {
 	}
 
 	private void initData() {
-		mProducerBeans = (ProducerBeans) getIntent().getSerializableExtra(
-				"producerBeans");
+		mProducerBean = (ProducerBean) getIntent().getSerializableExtra(
+				"producerBean");
+		Log.e(TAG, mProducerBean.getPort()+"");
 		mRequestVideoThread.start();
 		mShowImageThread.start();
 	}
@@ -113,7 +115,8 @@ public class RealTimeVideoActivity extends Activity {
 		public void run() {
 			Socket socket = null;
 			try {
-				socket = new Socket(mProducerBeans.getIp(), mProducerBeans
+				Log.e(TAG, mProducerBean.getPort()+"");
+				socket = new Socket(mProducerBean.getIp(), mProducerBean
 						.getPort());
 				if (DEBUG) {
 					Log.e(TAG, "正在连接服务器");
@@ -122,7 +125,7 @@ public class RealTimeVideoActivity extends Activity {
 						socket.getInputStream()); // 从socket流中接收数据
 				ObjectOutputStream objectOutputStream = new ObjectOutputStream(
 						socket.getOutputStream());
-				PacketBean data2 = new PacketBean("1", "server");
+				PacketBean data2 = new PacketBean(PacketBean.SUCCESS, "server");
 				try {
 					PacketBean dataBean = null; // 将流中数据读出并将其序列化
 					while ((dataBean = (PacketBean) objectInputStream
@@ -138,6 +141,7 @@ public class RealTimeVideoActivity extends Activity {
 							if (mBitmaps.size() > MAX_CACHE_COUNT) {
 								mBitmaps.remove(0);
 							}
+							Log.e(TAG, "height : "+bitmap.getHeight()+" width: " +bitmap.getWidth());
 							mBitmaps.add(bitmap);
 						}
 						// String path = Environment.getExternalStorageState()
@@ -180,6 +184,15 @@ public class RealTimeVideoActivity extends Activity {
 		bitmap.compress(CompressFormat.JPEG, 100, fos);
 		fos.flush();
 		fos.close();
+	}
+
+	public Bitmap rotate(Bitmap bmp, float degree) {
+		Matrix matrix = new Matrix();
+		matrix.postRotate(degree);
+		int width = bmp.getWidth();
+		int height = bmp.getHeight();
+		Bitmap bm = Bitmap.createBitmap(bmp, 0, 0, width, height, matrix, true);
+		return bm;
 	}
 
 }

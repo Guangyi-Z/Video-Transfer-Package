@@ -11,7 +11,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 import com.androidsocket.R;
-import com.client.model.ServerBeans;
+import com.model.ServerBeans;
 
 /**
  * 

@@ -1,12 +1,15 @@
 package org.producer;
 
+/**
+ * @author lican 此类已废弃
+ */
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-import com.test.PacketBean;
+import com.model.PacketBean;
 
 class MyThread extends Thread{	
 	private ByteArrayOutputStream myoutputstream;
@@ -29,15 +32,15 @@ class MyThread extends Thread{
             Socket tempSocket = new Socket(ipname, 7803);
             System.out.println("发起与PC的连接~~~~~~~~~~~··");
             byte[] datas = myoutputstream.toByteArray();
-			PacketBean data = new PacketBean(androidId,datas);    
+//			PacketBean data = new PacketBean(androidId,datas);    
             //PacketBean data = new PacketBean("producer",datas);    
 			
             ObjectOutputStream clientOutputStream = new ObjectOutputStream(tempSocket.getOutputStream()); 
 			ObjectInputStream clientInputStream = new ObjectInputStream(tempSocket.getInputStream()); 
-			clientOutputStream.writeObject(data);
+//			clientOutputStream.writeObject(data);
 			//System.out.println("发送了图片~~~~~~~~~~~~~~~~~~~~");
 			
-			data = (PacketBean) clientInputStream.readObject();
+//			data = (PacketBean) clientInputStream.readObject();
 			clientInputStream.close(); 
 			clientOutputStream.flush();
 			clientOutputStream.close();
@@ -47,10 +50,10 @@ class MyThread extends Thread{
             tempSocket.close();                   
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } /*catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
     }
 
 }

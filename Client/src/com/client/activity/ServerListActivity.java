@@ -28,8 +28,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.androidsocket.R;
-import com.client.model.ServerBeans;
 import com.client.view.CustomDialog;
+import com.model.ServerBeans;
 
 /**
  * 
@@ -147,7 +147,7 @@ public class ServerListActivity extends Activity implements OnClickListener,
 				if(!b){
 					return ;
 				}
-				addServer("服务器1", "192.168.253.1", 9901);
+				addServer("服务器1", "192.168.253.1", 9902);
 //				addServer(serverName, serverIP, Integer.parseInt(serverPort));
 				addserverDialog.dismiss();
 			}

@@ -28,7 +28,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="org.producer.producer"
+            android:name="org.producer.ProducerActivity"
             android:screenOrientation="landscape"
             android:label="@string/app_name" >
 

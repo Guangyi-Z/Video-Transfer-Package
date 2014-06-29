@@ -43,7 +43,7 @@ public class GetIP extends Activity {
 					ipname = iptext.getText().toString().trim();
 					Bundle data = new Bundle();
 					data.putString("ipname",ipname);					
-					Intent intent = new Intent(GetIP.this,producer.class);
+					Intent intent = new Intent(GetIP.this,ProducerActivity.class);
 					intent.putExtras(data);
 					startActivity(intent);
 				}

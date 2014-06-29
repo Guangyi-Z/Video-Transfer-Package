@@ -8,8 +8,10 @@ import java.net.Socket;
 
 import org.wanghai.CameraTest.R;
 
-import com.test.PacketBean;
+import com.model.PacketBean;
+import com.model.ProducerBean;
 
+import android.R.integer;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.ImageFormat;
@@ -22,13 +24,14 @@ import android.view.SurfaceView;
 import android.view.Window;
 import android.view.WindowManager;
 
-public class producer extends Activity {
+public class ProducerActivity extends Activity {
 	private SurfaceView sView;
 	private SurfaceHolder surfaceHolder;
 	private int screenWidth, screenHeight;	
 	private Camera camera;                    
 	private boolean isPreview = false;        
 	private String ipname;
+	private int port;
 	private String androidId;
 	private StreamIt streamIt;
 
@@ -44,8 +47,11 @@ public class producer extends Activity {
         Intent intent = getIntent();
         Bundle data = intent.getExtras();
         ipname = data.getString("ipname");
+        
+        ipname = "192.168.253.1";
+        port = 9901;
 
-        String android_id = Secure.getString(producer.this.getContentResolver(),Secure.ANDROID_ID);   
+        String android_id = Secure.getString(ProducerActivity.this.getContentResolver(),Secure.ANDROID_ID);   
         this.androidId = android_id;
         		
 		screenWidth = 640;
@@ -111,18 +117,29 @@ public class producer extends Activity {
 		public void run() {
 			// TODO Auto-generated method stub
 			try {
-				Socket tempSocket = new Socket("192.168.191.4",7115);
+				Socket tempSocket = new Socket(ipname,port);
 	            System.out.println("发起与PC的连接~~~~~~~~~~~··");
 
 	            ObjectOutputStream clientOutputStream = new ObjectOutputStream(tempSocket.getOutputStream()); 
 				ObjectInputStream clientInputStream = new ObjectInputStream(tempSocket.getInputStream()); 
+				
+				//向服务器输出Producer信息
+				PacketBean packetBean = new PacketBean();
+				ProducerBean producerBean = new ProducerBean();
+				producerBean.setAndroidName(androidId);
+				packetBean.setPacketType(PacketBean.PRODUCER_INFO);
+				packetBean.setData(producerBean);
+				clientOutputStream.writeObject(packetBean);
+				clientOutputStream.flush();
+				clientInputStream.readObject();
 				ByteArrayOutputStream myoutputstream = new ByteArrayOutputStream();
+				
 	            while(true){
 	            	try {
 	            		myoutputstream = streamIt.getOutstream();
 			            byte[] datas = myoutputstream.toByteArray();
 			            System.out.println("图片数据的长度： " + datas.length);
-						PacketBean data = new PacketBean(androidId,datas);    
+						PacketBean data = new PacketBean(PacketBean.TYPE_IMAGE,datas);    
 			            //PacketBean data = new PacketBean("producer",datas);    
 						
 						clientOutputStream.writeObject(data);

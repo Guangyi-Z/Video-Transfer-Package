@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
-import com.test.PacketBean;
+import com.model.PacketBean;
 
 
 /**
