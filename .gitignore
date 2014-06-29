@@ -1,0 +1,11 @@
+
+*/bin
+*/gen
+*/proguard-project.txt
+*/project.properties
+Client/.classpath
+Producer/.classpath
+Client/.project
+Producer/.project
+Client/.settings
+Producer/.settings
