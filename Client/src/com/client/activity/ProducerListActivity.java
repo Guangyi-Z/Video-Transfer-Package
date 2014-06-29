@@ -52,7 +52,6 @@ public class ProducerListActivity extends Activity implements
 	private ServerBeans mServerBeans;
 	private ActionBar mActionBar;
 
-	
 	private Handler myHandler = new Handler(){
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
