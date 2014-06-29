@@ -14,6 +14,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -51,9 +52,17 @@ public class ProducerListActivity extends Activity implements
 	private ServerBeans mServerBeans;
 	private ActionBar mActionBar;
 
+	
 	private Handler myHandler = new Handler(){
-		public void handleMessage(android.os.Message msg) {
-			
+		public void handleMessage(Message msg) {
+			switch (msg.what) {
+			case 0:
+				//刷新Producer列表
+				mAdapter.notifyDataSetChanged();
+				break;
+			default:
+				break;
+			}
 		};
 	};
 	@Override
@@ -97,14 +106,16 @@ public class ProducerListActivity extends Activity implements
 		try {
 			Socket socket = new Socket(serverBeans.getIp(),
 					serverBeans.getPort());
-			is = new ObjectInputStream(socket.getInputStream()); // 从socket流中接收数据
-
+			
+			//请求获取Producer列表
 			os = new ObjectOutputStream(socket.getOutputStream());
 			PacketBean packetBean = new PacketBean();
 			packetBean.setPacketType(PacketBean.PRODUCER_LIST);
 			os.writeObject(packetBean);
 			os.flush();
 
+			//获取Server返回的Producer列表
+			is = new ObjectInputStream(socket.getInputStream());
 			packetBean = (PacketBean) is.readObject();
 			if (packetBean != null) {
 				if (packetBean.getPacketType() == PacketBean.PRODUCER_LIST) {
