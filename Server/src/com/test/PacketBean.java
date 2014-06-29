@@ -3,7 +3,7 @@ package com.test;
 import java.io.Serializable;
 
 public class PacketBean implements Serializable {
-
+	
     public String packetType;
     public Object data;
     
