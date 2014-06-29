@@ -2,7 +2,6 @@ package com.server;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.net.ServerSocket;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;

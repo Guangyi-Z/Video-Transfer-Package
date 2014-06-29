@@ -7,28 +7,24 @@ import java.io.Serializable;
  */
 public class PacketBean implements Serializable {
 
-	public String packetType;
+	public static final int PRODUCER_LIST = 1001;
+	public int packetType;
 	public Object data;//数据段为图片
 	
 	public PacketBean() {
 	}
 
-	public PacketBean(String packetType2, Object data2) {
-		packetType = packetType2;
-		data = data2;
+	public PacketBean(int packetType, Object data) {
+		super();
+		this.packetType = packetType;
+		this.data = data;
 	}
 
-	
-	@Override
-	public String toString() {
-		return "PacketBean [packetType=" + packetType + ", data=" + data + "]";
-	}
-
-	public String getPacketType() {
+	public int getPacketType() {
 		return packetType;
 	}
 
-	public void setPacketType(String packetType) {
+	public void setPacketType(int packetType) {
 		this.packetType = packetType;
 	}
 
@@ -40,4 +36,14 @@ public class PacketBean implements Serializable {
 		this.data = data;
 	}
 
+	public static int getProducerList() {
+		return PRODUCER_LIST;
+	}
+
+	@Override
+	public String toString() {
+		return "PacketBean [packetType=" + packetType + ", data=" + data + "]";
+	}
+
+	
 }
