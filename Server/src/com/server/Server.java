@@ -6,7 +6,9 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.List;
 
+import com.dao.VideoDao;
 import com.model.PacketBean;
 import com.model.ProducerBean;
 import com.sun.org.apache.bcel.internal.generic.NEW;
@@ -123,6 +125,23 @@ public class Server {
 					if (packetBean.getPacketType() == PacketBean.PRODUCER_LIST) {
 					  //返回Producer列表
 						packetBean = new PacketBean(PacketBean.PRODUCER_LIST, arrayList);
+						objectOutputStream.writeObject(packetBean);
+						objectOutputStream.flush();
+					}else if(packetBean.getPacketType() == PacketBean.CATALOG_LIST){
+						List<String> catalogList = new ArrayList<String>();
+						VideoDao videoDao = new VideoDao();
+						catalogList = videoDao.getVideoDirs();
+						//System.out.println(catalogList.toString());
+						packetBean = new PacketBean(PacketBean.CATALOG_LIST,catalogList);
+						objectOutputStream.writeObject(packetBean);
+						objectOutputStream.flush();
+					}else if(packetBean.getPacketType() == PacketBean.VIDEO_LIST){
+						String dirPath = (String) packetBean.getData();
+						List<String> VideoList = new ArrayList<String>();
+						VideoDao videoDao = new VideoDao();
+						VideoList = videoDao.getVideoNames(dirPath);
+						//System.out.println(VideoList.toString());
+						packetBean = new PacketBean(PacketBean.VIDEO_LIST,VideoList);
 						objectOutputStream.writeObject(packetBean);
 						objectOutputStream.flush();
 					}

@@ -60,7 +60,9 @@ public class SelectPlayActivity extends Activity implements OnClickListener {
 		Intent intent = null;
 		switch (view.getId()) {
 		case R.id.btn_history_video:
-
+			intent = new Intent(this,HistoryProducerListActivity.class);
+			intent.putExtra("serverBeans", mServerBeans);
+			startActivity(intent);
 			break;
 		case R.id.btn_realTime_video:
 			intent = new Intent(this,ProducerListActivity.class);

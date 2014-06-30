@@ -16,6 +16,7 @@ import java.util.TimerTask;
 
 import javax.imageio.ImageIO;
 
+import com.dao.VideoDao;
 import com.model.PacketBean;
 import com.model.ProducerBean;
 import com.server.ScreenRecording;
@@ -139,8 +140,8 @@ public class ServerThread implements Runnable {
 				int minute = c.get(Calendar.MINUTE);
 				int second = c.get(Calendar.SECOND);
 
-				String path = "G:/video2/" + producerBean.getAndroidName()
-						+ "/";
+				VideoDao videoDao = new VideoDao();
+				String path = "E:/tomcat/安装后/webapps/httpGetVideo/" + producerBean.getAndroidName();
 				File file = new File(path);
 				if (!file.exists()) {
 					// 如果要创建的多级目录不存在才需要创建。
@@ -150,8 +151,12 @@ public class ServerThread implements Runnable {
 						+ "_" + minute + "_" + second + ".mp4"; // 得到系统当前时间，以该时间作为视频文件的命名
 				System.out.println("图片缓存的数据存图片数目为：   " + arrayList.size());
 				ScreenRecording sr = new ScreenRecording(); // 调用合成视频的类
-				sr.makeVideo(arrayList, path, name, 5); // 合成视频的函数
-
+				boolean flag = sr.makeVideo(arrayList, path + "/", name, 5); // 合成视频的函数
+				if(flag){
+					videoDao.addVideoPath(producerBean.getAndroidName(), name);
+				}else {
+					System.out.println("合成视频失败");
+				}
 				// 清除数组中的数据，重新获取图像
 				arrayList.clear(); // 清空arraylist的数据，从新获取数据
 			}

@@ -40,16 +40,16 @@ import com.model.ServerBeans;
 
 /**
  * 
- * @author caolijie 2014-06-26 某个Server上在线Producer列表界面
+ * @author lican 2014-06-30 某个Server上缓存了的producer列表界面
  */
-public class ProducerListActivity extends Activity implements
+public class HistoryProducerListActivity extends Activity implements
 		OnItemClickListener {
 	private static final boolean BUG = true;
-	private static final String TAG = "ProducerListActivity";
+	private static final String TAG = "HistoryProducerListActivity";
 	private Context mContext;
 	private ListView mListView;
 	private MyAdapter mAdapter;
-	private List<ProducerBean> mProducerList = new ArrayList<ProducerBean>();
+	private List<String> mHistoryProducerList = new ArrayList<String>();
 	private ServerBeans mServerBeans;
 	private ActionBar mActionBar;
 
@@ -70,7 +70,7 @@ public class ProducerListActivity extends Activity implements
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_producer_list);
+		setContentView(R.layout.history_producer_list);
 		mContext = getApplicationContext();
 		initView();
 		initListener();
@@ -84,9 +84,9 @@ public class ProducerListActivity extends Activity implements
 		mActionBar.setBackgroundDrawable(getResources().getDrawable(
 				R.color.actionbar_background));
 		mActionBar.setIcon(R.drawable.ic_launcher);
-		mActionBar.setTitle("Producer");
+		mActionBar.setTitle("History_Producer");
 
-		mListView = (ListView) findViewById(R.id.producer_list);
+		mListView = (ListView) findViewById(R.id.history_producer_list);
 	}
 
 	private void initListener() {
@@ -117,7 +117,7 @@ public class ProducerListActivity extends Activity implements
 					// 请求获取Producer列表
 					os = new ObjectOutputStream(socket.getOutputStream());
 					PacketBean packetBean = new PacketBean();
-					packetBean.setPacketType(PacketBean.PRODUCER_LIST);
+					packetBean.setPacketType(PacketBean.CATALOG_LIST);
 					os.writeObject(packetBean);
 					os.flush();
 
@@ -125,9 +125,10 @@ public class ProducerListActivity extends Activity implements
 					is = new ObjectInputStream(socket.getInputStream());
 					packetBean = (PacketBean) is.readObject();
 					if (packetBean != null) {
-						if (packetBean.getPacketType() == PacketBean.PRODUCER_LIST) {
-							mProducerList = (List<ProducerBean>) packetBean.getData();
-							Log.e(TAG, mProducerList.toString());
+						if (packetBean.getPacketType() == PacketBean.CATALOG_LIST) {
+							Log.e(TAG, packetBean.getData().toString());
+							mHistoryProducerList = (List<String>) packetBean.getData();
+							Log.e(TAG, mHistoryProducerList.toString());
 							myHandler.sendEmptyMessage(0);
 						}
 					}
@@ -159,10 +160,11 @@ public class ProducerListActivity extends Activity implements
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View view, int position,
 			long id) {
-		ProducerBean producerBean = mProducerList.get(position);
-		if(producerBean!=null){
-			Intent intent = new Intent(this,RealTimeVideoActivity.class);
-			intent.putExtra("producerBean", producerBean);
+		String catalogName = mHistoryProducerList.get(position);
+		if(catalogName!=null){
+			Intent intent = new Intent(this,HistoryVideoActivity.class);
+			intent.putExtra("catalogName", catalogName);
+			intent.putExtra("serverBeans", mServerBeans);
 			startActivity(intent);
 		}
 	}
@@ -186,12 +188,12 @@ public class ProducerListActivity extends Activity implements
 
 		@Override
 		public int getCount() {
-			return mProducerList.size();
+			return mHistoryProducerList.size();
 		}
 
 		@Override
 		public Object getItem(int arg0) {
-			return mProducerList.get(arg0);
+			return mHistoryProducerList.get(arg0);
 		}
 
 		@Override
@@ -204,29 +206,21 @@ public class ProducerListActivity extends Activity implements
 			HolderView holderView = null;
 			if (convertView == null) {
 				holderView = new HolderView();
-				convertView = mLayoutInflater.inflate(R.layout.producer_item,
+				convertView = mLayoutInflater.inflate(R.layout.history_producer_item,
 						null);
-				holderView.tvProducerIP = (TextView) convertView
-						.findViewById(R.id.tv_producer_ip);
-				holderView.tvProducerName = (TextView) convertView
-						.findViewById(R.id.tv_producer_name);
-				holderView.tvProducerPort = (TextView) convertView
-						.findViewById(R.id.tv_producer_port);
+				holderView.historyCatalog = (TextView) convertView
+						.findViewById(R.id.history_catalog);
 				convertView.setTag(holderView);
 			} else {
 				holderView = (HolderView) convertView.getTag();
 			}
-			ProducerBean producerBean = mProducerList.get(position);
-			holderView.tvProducerIP.setText(producerBean.getIp());
-			holderView.tvProducerName.setText(producerBean.getAndroidName());
-			holderView.tvProducerPort.setText(producerBean.getPort() + "");
+			String hCatalog = mHistoryProducerList.get(position);
+			holderView.historyCatalog.setText(hCatalog);
 			return convertView;
 		}
 
 		class HolderView {
-			TextView tvProducerName;
-			TextView tvProducerIP;
-			TextView tvProducerPort;
+			TextView historyCatalog;
 		}
 	}
 

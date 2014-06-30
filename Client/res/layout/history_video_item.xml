@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/single_item_height" 
+    android:minHeight="@dimen/single_item_height">
+
+    <TextView
+        android:id="@+id/history_video_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/xxlarge_margin"
+        android:text="历史视频"
+        android:textColor="@color/black_text"
+        android:textSize="@dimen/text_medium" />
+</RelativeLayout>

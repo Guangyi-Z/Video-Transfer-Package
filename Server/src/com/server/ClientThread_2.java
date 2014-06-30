@@ -25,14 +25,14 @@ public class ClientThread_2 implements Runnable{
 		// TODO Auto-generated method stub
 		ServerThread serverThread = new ServerThread();
 		try {
-			objectOutputStream = new ObjectOutputStream(socket.getOutputStream());                                  //¶ÔÏóÁ÷
+			objectOutputStream = new ObjectOutputStream(socket.getOutputStream());                                  //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
 			while(true){
 				image = serverThread.getImage();
-				ImageIO.write(image, "jpg", out);                                                                                             //½«ÊµÊ±Í¼Æ¬×ª»»³ÉÁ÷¶ÔÏó
+				ImageIO.write(image, "jpg", out);                                                                                             //ï¿½ï¿½ÊµÊ±Í¼Æ¬×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 				byte[] datas = out.toByteArray();
 				try {
-					PacketBean data = new PacketBean();                                                                             //ÐòÁÐ»¯µÄÀà
+					PacketBean data = new PacketBean();                                                                             //ï¿½ï¿½ï¿½Ð»ï¿½ï¿½ï¿½ï¿½ï¿½
 					data.setData(datas);
 					data.setPacketType("sendshots");
 

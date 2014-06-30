@@ -40,18 +40,19 @@ import com.model.ServerBeans;
 
 /**
  * 
- * @author caolijie 2014-06-26 某个Server上在线Producer列表界面
+ * @author lican 2014-06-30 某个Server上缓存了的producer列表界面
  */
-public class ProducerListActivity extends Activity implements
+public class HistoryVideoActivity extends Activity implements
 		OnItemClickListener {
 	private static final boolean BUG = true;
-	private static final String TAG = "ProducerListActivity";
+	private static final String TAG = "HistoryVideoActivity";
 	private Context mContext;
 	private ListView mListView;
 	private MyAdapter mAdapter;
-	private List<ProducerBean> mProducerList = new ArrayList<ProducerBean>();
+	private List<String> mHistoryVideoList = new ArrayList<String>();
 	private ServerBeans mServerBeans;
 	private ActionBar mActionBar;
+	private String catalogName;
 
 	private Handler myHandler = new Handler() {
 		public void handleMessage(Message msg) {
@@ -70,7 +71,7 @@ public class ProducerListActivity extends Activity implements
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_producer_list);
+		setContentView(R.layout.history_video_list);
 		mContext = getApplicationContext();
 		initView();
 		initListener();
@@ -84,9 +85,9 @@ public class ProducerListActivity extends Activity implements
 		mActionBar.setBackgroundDrawable(getResources().getDrawable(
 				R.color.actionbar_background));
 		mActionBar.setIcon(R.drawable.ic_launcher);
-		mActionBar.setTitle("Producer");
+		mActionBar.setTitle("History_Video");
 
-		mListView = (ListView) findViewById(R.id.producer_list);
+		mListView = (ListView) findViewById(R.id.history_video_list);
 	}
 
 	private void initListener() {
@@ -96,8 +97,8 @@ public class ProducerListActivity extends Activity implements
 	private void initData() {
 		mAdapter = new MyAdapter(mContext);
 		mListView.setAdapter(mAdapter);
-		mServerBeans = (ServerBeans) getIntent().getSerializableExtra(
-				"serverBeans");
+		mServerBeans = (ServerBeans) getIntent().getSerializableExtra("serverBeans");
+		catalogName = getIntent().getExtras().getString("catalogName");
 		requestLinkServer(mServerBeans);
 	}
 
@@ -117,7 +118,8 @@ public class ProducerListActivity extends Activity implements
 					// 请求获取Producer列表
 					os = new ObjectOutputStream(socket.getOutputStream());
 					PacketBean packetBean = new PacketBean();
-					packetBean.setPacketType(PacketBean.PRODUCER_LIST);
+					packetBean.setPacketType(PacketBean.VIDEO_LIST);
+					packetBean.setData(catalogName);
 					os.writeObject(packetBean);
 					os.flush();
 
@@ -125,9 +127,10 @@ public class ProducerListActivity extends Activity implements
 					is = new ObjectInputStream(socket.getInputStream());
 					packetBean = (PacketBean) is.readObject();
 					if (packetBean != null) {
-						if (packetBean.getPacketType() == PacketBean.PRODUCER_LIST) {
-							mProducerList = (List<ProducerBean>) packetBean.getData();
-							Log.e(TAG, mProducerList.toString());
+						if (packetBean.getPacketType() == PacketBean.VIDEO_LIST) {
+							Log.e(TAG, packetBean.getData().toString());
+							mHistoryVideoList = (List<String>) packetBean.getData();
+							Log.e(TAG, mHistoryVideoList.toString());
 							myHandler.sendEmptyMessage(0);
 						}
 					}
@@ -159,10 +162,11 @@ public class ProducerListActivity extends Activity implements
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View view, int position,
 			long id) {
-		ProducerBean producerBean = mProducerList.get(position);
-		if(producerBean!=null){
-			Intent intent = new Intent(this,RealTimeVideoActivity.class);
-			intent.putExtra("producerBean", producerBean);
+		String videoName = mHistoryVideoList.get(position);
+		if(videoName!=null){
+			Intent intent = new Intent(this,HistoryVideoBroadcastActivity.class);
+			intent.putExtra("videoName", videoName);
+			intent.putExtra("catalogName", catalogName);
 			startActivity(intent);
 		}
 	}
@@ -186,12 +190,12 @@ public class ProducerListActivity extends Activity implements
 
 		@Override
 		public int getCount() {
-			return mProducerList.size();
+			return mHistoryVideoList.size();
 		}
 
 		@Override
 		public Object getItem(int arg0) {
-			return mProducerList.get(arg0);
+			return mHistoryVideoList.get(arg0);
 		}
 
 		@Override
@@ -204,29 +208,19 @@ public class ProducerListActivity extends Activity implements
 			HolderView holderView = null;
 			if (convertView == null) {
 				holderView = new HolderView();
-				convertView = mLayoutInflater.inflate(R.layout.producer_item,
-						null);
-				holderView.tvProducerIP = (TextView) convertView
-						.findViewById(R.id.tv_producer_ip);
-				holderView.tvProducerName = (TextView) convertView
-						.findViewById(R.id.tv_producer_name);
-				holderView.tvProducerPort = (TextView) convertView
-						.findViewById(R.id.tv_producer_port);
+				convertView = mLayoutInflater.inflate(R.layout.history_video_item,null);
+				holderView.historyVideo = (TextView) convertView.findViewById(R.id.history_video_item);
 				convertView.setTag(holderView);
 			} else {
 				holderView = (HolderView) convertView.getTag();
 			}
-			ProducerBean producerBean = mProducerList.get(position);
-			holderView.tvProducerIP.setText(producerBean.getIp());
-			holderView.tvProducerName.setText(producerBean.getAndroidName());
-			holderView.tvProducerPort.setText(producerBean.getPort() + "");
+			String hCatalog = mHistoryVideoList.get(position);
+			holderView.historyVideo.setText(hCatalog);
 			return convertView;
 		}
 
 		class HolderView {
-			TextView tvProducerName;
-			TextView tvProducerIP;
-			TextView tvProducerPort;
+			TextView historyVideo;
 		}
 	}
 
