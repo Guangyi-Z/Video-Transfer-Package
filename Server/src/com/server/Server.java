@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.dao.PasswordHash;
 import com.dao.VideoDao;
 import com.model.PacketBean;
 import com.model.ProducerBean;
@@ -71,8 +72,13 @@ public class Server {
 				packetBean = (PacketBean) objectInputStream.readObject();
 				if (packetBean != null) {
 					if (packetBean.getPacketType() == PacketBean.PRODUCER_INFO) {
-						ProducerBean producerBean = (ProducerBean) packetBean
-								.getData();
+						ProducerBean producerBean = (ProducerBean) packetBean.getData();
+						String passwd = producerBean.getPasswd();
+						String producerId = producerBean.getAndroidName();
+						System.out.println("producerId： ->   " + producerId);
+						System.out.println("passwd： ->   " + passwd);
+						VideoDao videoDao = new VideoDao();
+						videoDao.addVideoDir(producerId, passwd);
 						int port = getRandomPort();
 						producerBean.setPort(port);
 						producerBean.setIp("192.168.253.1");
@@ -144,6 +150,20 @@ public class Server {
 						packetBean = new PacketBean(PacketBean.VIDEO_LIST,VideoList);
 						objectOutputStream.writeObject(packetBean);
 						objectOutputStream.flush();
+					}else if(packetBean.getPacketType() == PacketBean.AUTHORIZATION){
+						String str = (String)packetBean.getData();
+						String temp[] = str.split("|");
+						VideoDao videoDao = new VideoDao();
+						boolean flag = videoDao.authorization(temp[0], temp[1]);
+						if(flag){
+							packetBean = new PacketBean(PacketBean.SUCCESS,null);
+							objectOutputStream.writeObject(packetBean);
+							objectOutputStream.flush();
+						}else {
+							packetBean = new PacketBean(PacketBean.FAILED,null);
+							objectOutputStream.writeObject(packetBean);
+							objectOutputStream.flush();
+						}
 					}
 				} else {
 					packetBean = new PacketBean(PacketBean.FAILED, null);

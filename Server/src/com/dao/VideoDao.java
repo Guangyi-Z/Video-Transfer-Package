@@ -1,5 +1,7 @@
 package com.dao;
 import java.io.File;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -17,11 +19,24 @@ public class VideoDao {
 	static JdbcTemplate jdbc = new JdbcTemplate(JdbcUtils.getDataSource());
 
 	@Test
-	public void testAddVideoPath(){
+	public void testAddVideo(){
 		String producerId = "aa3";
 		String name = "video3.mp4";
 		VideoDao videoDao = new VideoDao();
-		videoDao.addVideoPath(producerId, name);
+		videoDao.addVideo(producerId, name);
+	}
+	
+	@Test
+	public void testAddVideoDirect() throws NoSuchAlgorithmException, InvalidKeySpecException{
+		String producerId = "AA4";
+		String passwd = "123456";
+		VideoDao videoDao = new VideoDao();
+		boolean b = videoDao.addVideoDir(producerId, passwd);
+		if(b){
+			System.out.println("成功了");
+		}else {
+			System.out.println("失败了");
+		}
 	}
 	
 	@Test
@@ -69,11 +84,10 @@ public class VideoDao {
 	 * @param name
 	 * @return
 	 */
-	public boolean addVideoPath(String producerId, String name) {
+	public boolean addVideo(String producerId, String name) {
 		int id = getVideoDir(producerId);
 		if (id == -1) {
-			addVideoDir(producerId);
-			id = getVideoDir(producerId);
+			return false;
 		}
 		String sql = "insert into video(id,name) values (?,?);";
 		Object[] args = new Object[] {id,name};
@@ -82,13 +96,23 @@ public class VideoDao {
 
 	/**
 	 * 在数据库中producer表增加一个目录记录
-	 * @param direct
+	 * @param producerId
 	 * @return
+	 * @throws InvalidKeySpecException 
+	 * @throws NoSuchAlgorithmException 
 	 */
-	public boolean addVideoDir(String direct) {
-		String sql = "insert into producer(producer_id) values (?);";
-		Object[] args = new Object[] { direct };
-		return jdbc.update(sql,args) != 0;
+	public boolean addVideoDir(String producerId,String passwd) throws NoSuchAlgorithmException, InvalidKeySpecException {
+		int id = getVideoDir(producerId);
+		if(id == -1){
+			PasswordHash passwordHash = new PasswordHash();
+			String sql = "insert into producer(producer_id,passwd_hashvalue) values (?,?);";
+			String passwd_hashvalue = null;
+			passwd_hashvalue = passwordHash.createHash(passwd);
+			Object[] args = new Object[] { producerId ,passwd_hashvalue};
+			return jdbc.update(sql,args) != 0;
+		}
+		
+		return false;
 	}
 
 	/**
@@ -180,6 +204,36 @@ public class VideoDao {
 		} else {
 			String path = results.get(0);
 			return path;
+		}
+	}
+	
+	/**
+	 * 对client端请求producer视频时输入的密码进行认证
+	 * @param producerId
+	 * @param passwd
+	 * @return
+	 * @throws InvalidKeySpecException 
+	 * @throws NoSuchAlgorithmException 
+	 */
+	public boolean authorization(String producerId,String passwd) throws NoSuchAlgorithmException, InvalidKeySpecException{
+		String sql = "select passwd_hashvalue from producer where producer_id =?;";
+		Object[] args = new Object[]{producerId};
+		List<Map<String, String>> list =jdbc.queryForList(sql,args);
+		List<String> passwordList = new ArrayList<String>();
+		PasswordHash passwordHash = new PasswordHash();
+		for(Map<String, String>map : list){
+			String dir = map.get("passwd_hashvalue");
+			passwordList.add(dir);
+		}
+		if (passwordList == null || passwordList.isEmpty()) {
+			return false;
+		} else {
+			if(passwordHash.validatePassword(passwd, passwordList.get(0))){
+				return true;
+			}
+			else {
+				return false;
+			}
 		}
 	}
 

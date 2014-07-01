@@ -15,6 +15,10 @@ import android.widget.VideoView;
 
 import com.androidsocket.R;
 
+/**
+ * 
+ * @author lican 2014-07-01 播放历史视频
+ */
 public class HistoryVideoBroadcastActivity extends Activity {
 
 	private final static String TAG = "HistoryVideoBroadcastActivity";
