@@ -16,6 +16,7 @@ import java.util.TimerTask;
 
 import javax.imageio.ImageIO;
 
+import com.dao.Configuration;
 import com.dao.VideoDao;
 import com.model.PacketBean;
 import com.model.ProducerBean;
@@ -141,7 +142,8 @@ public class ServerThread implements Runnable {
 				int second = c.get(Calendar.SECOND);
 
 				VideoDao videoDao = new VideoDao();
-				String path = "E:/tomcat/安装后/webapps/httpGetVideo/" + producerBean.getAndroidName();
+				//从配置文件中得到文件存储的路径信息
+				String path = Configuration.getVideoDir() + producerBean.getAndroidName();
 				File file = new File(path);
 				if (!file.exists()) {
 					// 如果要创建的多级目录不存在才需要创建。

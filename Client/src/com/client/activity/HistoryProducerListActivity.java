@@ -215,6 +215,7 @@ public class HistoryProducerListActivity extends Activity implements
 				holderView = (HolderView) convertView.getTag();
 			}
 			String hCatalog = mHistoryProducerList.get(position);
+			hCatalog = hCatalog.substring(hCatalog.lastIndexOf("/")+1);//截取具体名称
 			holderView.historyCatalog.setText(hCatalog);
 			return convertView;
 		}
