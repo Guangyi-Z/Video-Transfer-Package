@@ -14,6 +14,7 @@ public class PacketBean implements Serializable {
 	public static final int FAILED = 404;
 	public static final int CATALOG_LIST = 1003;
 	public static final int VIDEO_LIST =1004;
+	public static final int AUTHORIZETION= 1005;
 	public int packetType;
 	public Object data;
 	

@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +39,7 @@ public class RealTimeVideoActivity extends Activity {
 	private ProducerBean mProducerBean;
 	private ImageView imageView = null;
 	private List<Bitmap> mBitmaps = new ArrayList<Bitmap>();
+	
 
 	private Handler mHandler = new Handler() {
 		public void handleMessage(Message msg) {
@@ -83,6 +85,7 @@ public class RealTimeVideoActivity extends Activity {
 		mProducerBean = (ProducerBean) getIntent().getSerializableExtra(
 				"producerBean");
 		Log.e(TAG, mProducerBean.getPort()+"");
+		
 		mRequestVideoThread.start();
 		mShowImageThread.start();
 	}

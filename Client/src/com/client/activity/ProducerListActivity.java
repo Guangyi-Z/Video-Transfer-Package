@@ -161,9 +161,8 @@ public class ProducerListActivity extends Activity implements
 			long id) {
 		ProducerBean producerBean = mProducerList.get(position);
 		if(producerBean!=null){
-			Intent intent = new Intent(this,RealTimeVideoActivity.class);
-			intent.putExtra("producerBean", producerBean);
-			startActivity(intent);
+			// 用户输入密码及身份验证
+			this.showAuthorizationDialog(producerBean);
 		}
 	}
 
@@ -229,5 +228,68 @@ public class ProducerListActivity extends Activity implements
 			TextView tvProducerPort;
 		}
 	}
+	
+	/**
+	 * 身份验证的dialog
+	 */
+	private void showAuthorizationDialog(final ProducerBean producerBean) {
+		final CustomDialog dialog = new CustomDialog(this,
+				R.layout.dialog_enter_password, R.style.custom_dialog);
+		dialog.show();
+		TextView txtCancel = (TextView) dialog
+				.findViewById(R.id.auth_tv_cancel);
+		TextView txtOk = (TextView) dialog.findViewById(R.id.auth_tv_ok);
+		final EditText etPassword = (EditText) dialog
+				.findViewById(R.id.auth_et_password);
 
+		// cancel btn
+		txtCancel.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				dialog.dismiss();
+			}
+		});
+		
+		// confirm btn
+		txtOk.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				dialog.dismiss();
+				
+				String passwd = etPassword.getText().toString().trim();
+				//  身份验证			
+				Socket socket= null;
+				ObjectInputStream is = null;
+				ObjectOutputStream os = null;
+				try {
+					socket = new Socket(mServerBeans.getIp(), mServerBeans.getPort());
+					is = new ObjectInputStream(
+							socket.getInputStream()); // 从socket流中接收数据
+					os = new ObjectOutputStream(
+							socket.getOutputStream());
+
+					// output
+					PacketBean passBean;
+					passBean = new PacketBean(PacketBean.AUTHORIZATION, 
+							producerBean.getAndroidName() + "|" + passwd);
+					os.writeObject(passBean);
+					os.flush();
+					
+					// input
+					PacketBean resBean= (PacketBean) is.readObject();
+					if(resBean!=null && 
+							resBean.getPacketType()==PacketBean.AUTHORIZATION && 
+							(Boolean) resBean.getData()){
+						 // 身份验证成功，跳转实时视频界面
+						Intent intent = new Intent(ProducerListActivity.this,RealTimeVideoActivity.class);
+						intent.putExtra("producerBean", producerBean);
+						startActivity(intent);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+					System.out.println("Connection Close");
+				}
+			}
+		});
+	}
 }

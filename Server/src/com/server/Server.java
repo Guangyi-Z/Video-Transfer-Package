@@ -122,19 +122,22 @@ public class Server {
 				PacketBean packetBean;
 				packetBean = (PacketBean) objectInputStream.readObject();
 				if (packetBean != null) {
-					if (packetBean.getPacketType() == PacketBean.PRODUCER_LIST) {
-					  //返回Producer列表
+					switch(packetBean.getPacketType()){
+					case PacketBean.PRODUCER_LIST:
+						//返回Producer列表
 						packetBean = new PacketBean(PacketBean.PRODUCER_LIST, arrayList);
 						objectOutputStream.writeObject(packetBean);
 						objectOutputStream.flush();
-					}else if(packetBean.getPacketType() == PacketBean.CATALOG_LIST){
+						break;
+					case PacketBean.CATALOG_LIST:
 						List<String> catalogList = new ArrayList<String>();
 						catalogList = getVideoDirs();
 						//System.out.println(catalogList.toString());
 						packetBean = new PacketBean(PacketBean.CATALOG_LIST,catalogList);
 						objectOutputStream.writeObject(packetBean);
 						objectOutputStream.flush();
-					}else if(packetBean.getPacketType() == PacketBean.VIDEO_LIST){
+						break;
+					case PacketBean.VIDEO_LIST:
 						String dirPath = (String) packetBean.getData();
 						dirPath = dirPath.substring(dirPath.lastIndexOf("/")+1);//得到文件夹名称
 						List<String> VideoList = new ArrayList<String>();
@@ -144,6 +147,9 @@ public class Server {
 						packetBean = new PacketBean(PacketBean.VIDEO_LIST,VideoList);
 						objectOutputStream.writeObject(packetBean);
 						objectOutputStream.flush();
+						break;
+					default:
+						break;
 					}
 				} else {
 					packetBean = new PacketBean(PacketBean.FAILED, null);

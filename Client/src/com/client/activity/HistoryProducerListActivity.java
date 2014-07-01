@@ -49,7 +49,8 @@ public class HistoryProducerListActivity extends Activity implements
 	private Context mContext;
 	private ListView mListView;
 	private MyAdapter mAdapter;
-	private List<String> mHistoryProducerList = new ArrayList<String>();
+	private List<String> mHistoryProducerNameList = new ArrayList<String>();
+	private List<String> mHistoryProducerBeanList = new ArrayList<String>();
 	private ServerBeans mServerBeans;
 	private ActionBar mActionBar;
 
@@ -127,11 +128,12 @@ public class HistoryProducerListActivity extends Activity implements
 					if (packetBean != null) {
 						if (packetBean.getPacketType() == PacketBean.CATALOG_LIST) {
 							Log.e(TAG, packetBean.getData().toString());
-							mHistoryProducerList = (List<String>) packetBean.getData();
-							Log.e(TAG, mHistoryProducerList.toString());
+							mHistoryProducerNameList = (List<String>) packetBean.getData();
+							Log.e(TAG, mHistoryProducerNameList.toString());
 							myHandler.sendEmptyMessage(0);
 						}
 					}
+					
 				} catch (UnknownHostException e) {
 					e.printStackTrace();
 				} catch (IOException e) {
@@ -160,12 +162,11 @@ public class HistoryProducerListActivity extends Activity implements
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View view, int position,
 			long id) {
-		String catalogName = mHistoryProducerList.get(position);
+		String catalogName = mHistoryProducerNameList.get(position);
+		
+		// 身份验证
 		if(catalogName!=null){
-			Intent intent = new Intent(this,HistoryVideoActivity.class);
-			intent.putExtra("catalogName", catalogName);
-			intent.putExtra("serverBeans", mServerBeans);
-			startActivity(intent);
+			HistoryProducerListActivity.this.showAuthorizationDialog(mServerBeans, catalogName);
 		}
 	}
 
@@ -188,12 +189,12 @@ public class HistoryProducerListActivity extends Activity implements
 
 		@Override
 		public int getCount() {
-			return mHistoryProducerList.size();
+			return mHistoryProducerNameList.size();
 		}
 
 		@Override
 		public Object getItem(int arg0) {
-			return mHistoryProducerList.get(arg0);
+			return mHistoryProducerNameList.get(arg0);
 		}
 
 		@Override
@@ -214,7 +215,7 @@ public class HistoryProducerListActivity extends Activity implements
 			} else {
 				holderView = (HolderView) convertView.getTag();
 			}
-			String hCatalog = mHistoryProducerList.get(position);
+			String hCatalog = mHistoryProducerNameList.get(position);
 			hCatalog = hCatalog.substring(hCatalog.lastIndexOf("/")+1);//截取具体名称
 			holderView.historyCatalog.setText(hCatalog);
 			return convertView;
@@ -223,6 +224,71 @@ public class HistoryProducerListActivity extends Activity implements
 		class HolderView {
 			TextView historyCatalog;
 		}
+	}
+	
+	/**
+	 * 身份验证的dialog
+	 */
+	private void showAuthorizationDialog(final ServerBeans serverBean, final String catalogName) {
+		final CustomDialog dialog = new CustomDialog(this,
+				R.layout.dialog_enter_password, R.style.custom_dialog);
+		dialog.show();
+		TextView txtCancel = (TextView) dialog
+				.findViewById(R.id.auth_tv_cancel);
+		TextView txtOk = (TextView) dialog.findViewById(R.id.auth_tv_ok);
+		final EditText etPassword = (EditText) dialog
+				.findViewById(R.id.auth_et_password);
+
+		// cancel btn
+		txtCancel.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				dialog.dismiss();
+			}
+		});
+		
+		// confirm btn
+		txtOk.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				dialog.dismiss();
+				
+				String passwd = etPassword.getText().toString().trim();
+				//  身份验证			
+				Socket socket= null;
+				ObjectInputStream is = null;
+				ObjectOutputStream os = null;
+				try {
+					socket = new Socket(serverBean.getIp(), serverBean.getPort());
+					is = new ObjectInputStream(
+							socket.getInputStream()); // 从socket流中接收数据
+					os = new ObjectOutputStream(
+							socket.getOutputStream());
+
+					// output
+					PacketBean passBean;
+					passBean = new PacketBean(PacketBean.AUTHORIZATION, 
+							catalogName + "|" + passwd);
+					os.writeObject(passBean);
+					os.flush();
+					
+					// input
+					PacketBean resBean= (PacketBean) is.readObject();
+					if(resBean!=null && 
+							resBean.getPacketType()==PacketBean.AUTHORIZATION && 
+							(Boolean) resBean.getData()){
+						 // 身份验证成功，跳转实时视频界面
+						Intent intent = new Intent(HistoryProducerListActivity.this,HistoryVideoActivity.class);
+						intent.putExtra("catalogName", catalogName);
+						intent.putExtra("serverBeans", mServerBeans);
+						startActivity(intent);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+					System.out.println("Connection Close");
+				}
+			}
+		});
 	}
 
 }
