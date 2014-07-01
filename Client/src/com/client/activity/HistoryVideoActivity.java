@@ -40,7 +40,7 @@ import com.model.ServerBeans;
 
 /**
  * 
- * @author lican 2014-06-30 某个Server上缓存了的producer列表界面
+ * @author lican 2014-06-30 某个producer的视频目录
  */
 public class HistoryVideoActivity extends Activity implements
 		OnItemClickListener {
@@ -58,7 +58,7 @@ public class HistoryVideoActivity extends Activity implements
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
 			case 0:
-				// 刷新Producer列表
+				// 刷新Video列表
 				mListView.setAdapter(mAdapter);
 				mAdapter.notifyDataSetChanged();
 				break;
@@ -102,7 +102,7 @@ public class HistoryVideoActivity extends Activity implements
 		requestLinkServer(mServerBeans);
 	}
 
-	// 链接服务器，并接受服务器返回的Producer列表
+	// 链接服务器，并接受服务器返回的Video列表
 	private void requestLinkServer(final ServerBeans serverBeans) {
 		new Thread(new Runnable() {
 
@@ -115,7 +115,7 @@ public class HistoryVideoActivity extends Activity implements
 					Socket socket = new Socket(serverBeans.getIp(), serverBeans
 							.getPort());
 
-					// 请求获取Producer列表
+					// 请求获取video列表
 					os = new ObjectOutputStream(socket.getOutputStream());
 					PacketBean packetBean = new PacketBean();
 					packetBean.setPacketType(PacketBean.VIDEO_LIST);
@@ -123,7 +123,7 @@ public class HistoryVideoActivity extends Activity implements
 					os.writeObject(packetBean);
 					os.flush();
 
-					// 获取Server返回的Producer列表
+					// 获取Server返回的video列表
 					is = new ObjectInputStream(socket.getInputStream());
 					packetBean = (PacketBean) is.readObject();
 					if (packetBean != null) {
