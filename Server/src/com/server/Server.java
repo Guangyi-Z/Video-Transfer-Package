@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.dao.PasswordHash;
 import com.dao.VideoDao;
 import com.model.PacketBean;
 import com.model.ProducerBean;
@@ -71,8 +72,13 @@ public class Server {
 				packetBean = (PacketBean) objectInputStream.readObject();
 				if (packetBean != null) {
 					if (packetBean.getPacketType() == PacketBean.PRODUCER_INFO) {
-						ProducerBean producerBean = (ProducerBean) packetBean
-								.getData();
+						ProducerBean producerBean = (ProducerBean) packetBean.getData();
+						String passwd = producerBean.getPasswd();
+						String producerId = producerBean.getAndroidName();
+						System.out.println("producerId： ->   " + producerId);
+						System.out.println("passwd： ->   " + passwd);
+						VideoDao videoDao = new VideoDao();
+						videoDao.addVideoDir(producerId, passwd);
 						int port = getRandomPort();
 						producerBean.setPort(port);
 						producerBean.setIp("192.168.253.1");
@@ -141,15 +147,30 @@ public class Server {
 						String dirPath = (String) packetBean.getData();
 						dirPath = dirPath.substring(dirPath.lastIndexOf("/")+1);//得到文件夹名称
 						List<String> VideoList = new ArrayList<String>();
-						VideoDao videoDao = new VideoDao();
-						VideoList = videoDao.getVideoNames(dirPath);
+						VideoDao videoDao1 = new VideoDao();
+						VideoList = videoDao1.getVideoNames(dirPath);
 						//System.out.println(VideoList.toString());
 						packetBean = new PacketBean(PacketBean.VIDEO_LIST,VideoList);
 						objectOutputStream.writeObject(packetBean);
 						objectOutputStream.flush();
 						break;
-					default:
+					case PacketBean.AUTHORIZATION:
+						String str = (String)packetBean.getData();
+						String temp[] = str.split("|");
+						VideoDao videoDao2 = new VideoDao();
+						boolean flag = videoDao2.authorization(temp[0], temp[1]);
+						if(flag){
+							packetBean = new PacketBean(PacketBean.SUCCESS,null);
+							objectOutputStream.writeObject(packetBean);
+							objectOutputStream.flush();
+						}else {
+							packetBean = new PacketBean(PacketBean.FAILED,null);
+							objectOutputStream.writeObject(packetBean);
+							objectOutputStream.flush();
+						}
 						break;
+					default:
+							break;
 					}
 				} else {
 					packetBean = new PacketBean(PacketBean.FAILED, null);

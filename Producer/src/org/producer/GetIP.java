@@ -16,8 +16,10 @@ import android.widget.TableLayout;
 
 public class GetIP extends Activity {
 	String ipname = null;
+	String passwd = null;
 	TableLayout loginForm;
-	EditText iptext;
+	EditText ipText;
+	EditText passwdText;
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,7 +33,8 @@ public class GetIP extends Activity {
 		
 		//装载/res/layout/login.xml界面布局
 		loginForm = (TableLayout)getLayoutInflater().inflate( R.layout.login, null);		
-		iptext = (EditText)loginForm.findViewById(R.id.ipedittext);				
+		ipText = (EditText)loginForm.findViewById(R.id.ipEditText);
+		passwdText = (EditText)loginForm.findViewById(R.id.passwdText);
 		builder.setView(loginForm);                              // 设置对话框显示的View对象
 		// 为对话框设置一个“登录”按钮
 		builder.setPositiveButton("确定"
@@ -40,9 +43,11 @@ public class GetIP extends Activity {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
 					//此处可执行登录处理
-					ipname = iptext.getText().toString().trim();
+					ipname = ipText.getText().toString().trim();
+					passwd = passwdText.getText().toString().trim();
 					Bundle data = new Bundle();
-					data.putString("ipname",ipname);					
+					data.putString("ipname",ipname);		
+					data.putString("passwd", passwd);
 					Intent intent = new Intent(GetIP.this,ProducerActivity.class);
 					intent.putExtras(data);
 					startActivity(intent);

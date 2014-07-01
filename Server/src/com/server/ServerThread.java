@@ -155,7 +155,7 @@ public class ServerThread implements Runnable {
 				ScreenRecording sr = new ScreenRecording(); // 调用合成视频的类
 				boolean flag = sr.makeVideo(arrayList, path + "/", name, 5); // 合成视频的函数
 				if(flag){
-					videoDao.addVideoPath(producerBean.getAndroidName(), name);
+					videoDao.addVideo(producerBean.getAndroidName(), name);
 				}else {
 					System.out.println("合成视频失败");
 				}

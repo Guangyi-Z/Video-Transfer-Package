@@ -15,11 +15,28 @@
 	/>
 <!-- 输入用户名的文本框 -->
 <EditText
-    android:id="@+id/ipedittext"
+    android:id="@+id/ipEditText"
 	android:layout_width="fill_parent"
 	android:layout_height="wrap_content"
 	android:digits="0123456789."
 	android:hint="请填写服务器IP"
+	android:selectAllOnFocus="true"
+	/>
+</TableRow>
+<TableRow>   
+<TextView
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+	android:text="Passwd:"
+	android:textSize="10pt"
+	/>
+<!-- 输入密码的文本框 -->
+<EditText
+    android:id="@+id/passwdText"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+	android:digits="0123456789."
+	android:hint="请设置producer密码"
 	android:selectAllOnFocus="true"
 	/>
 </TableRow>

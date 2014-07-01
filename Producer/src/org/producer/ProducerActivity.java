@@ -31,6 +31,7 @@ public class ProducerActivity extends Activity {
 	private Camera camera;                    
 	private boolean isPreview = false;        
 	private String ipname;
+	private String passwd;
 	private int port;
 	private String androidId;
 	private StreamIt streamIt;
@@ -47,8 +48,8 @@ public class ProducerActivity extends Activity {
         Intent intent = getIntent();
         Bundle data = intent.getExtras();
         ipname = data.getString("ipname");
-        
-        ipname = "192.168.253.1";
+        passwd = data.getString("passwd");
+        //ipname = "192.168.253.1";
         port = 9901;
 
         String android_id = Secure.getString(ProducerActivity.this.getContentResolver(),Secure.ANDROID_ID);   
@@ -127,6 +128,7 @@ public class ProducerActivity extends Activity {
 				PacketBean packetBean = new PacketBean();
 				ProducerBean producerBean = new ProducerBean();
 				producerBean.setAndroidName(androidId);
+				producerBean.setPasswd(passwd);
 				packetBean.setPacketType(PacketBean.PRODUCER_INFO);
 				packetBean.setData(producerBean);
 				clientOutputStream.writeObject(packetBean);
@@ -138,12 +140,12 @@ public class ProducerActivity extends Activity {
 	            	try {
 	            		myoutputstream = streamIt.getOutstream();
 			            byte[] datas = myoutputstream.toByteArray();
-			            System.out.println("图片数据的长度： " + datas.length);
+			            //System.out.println("图片数据的长度： " + datas.length);
 						PacketBean data = new PacketBean(PacketBean.TYPE_IMAGE,datas);    
 			            //PacketBean data = new PacketBean("producer",datas);    
 						
 						clientOutputStream.writeObject(data);
-						System.out.println("发送了图片~~~~~~~~~~~~~~~~~~~~");
+						//System.out.println("发送了图片~~~~~~~~~~~~~~~~~~~~");
 						
 						data = (PacketBean) clientInputStream.readObject();
 						//clientInputStream.close(); 
