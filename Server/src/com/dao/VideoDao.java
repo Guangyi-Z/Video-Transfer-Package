@@ -18,10 +18,10 @@ public class VideoDao {
 
 	@Test
 	public void testAddVideoPath(){
-		String direct = "G:/video2/aa3";
+		String producerId = "aa3";
 		String name = "video3.mp4";
 		VideoDao videoDao = new VideoDao();
-		videoDao.addVideoPath(direct, name);
+		videoDao.addVideoPath(producerId, name);
 	}
 	
 	@Test
@@ -34,28 +34,28 @@ public class VideoDao {
 	@Test
 	public void testGetVideoName(){
 		VideoDao videoDao = new VideoDao();
-		List<String> names = videoDao.getVideoNames("G:/video2/aa");
+		List<String> names = videoDao.getVideoNames("aa1");
 		System.out.println(names);
 	}
 	
 	@Test
 	public void testDeleteDirPath(){
 		VideoDao videoDao = new VideoDao();
-		boolean flag = videoDao.deleteDirPath("G:/video2/aa");
+		boolean flag = videoDao.deleteDirPath("aa2");
 		Assert.assertEquals(true, flag);
 	}
 	
 	@Test
 	public void testGetVideoDirect(){
 		VideoDao videoDao = new VideoDao();
-		String string = videoDao.getVideoDirect(2);
+		String string = videoDao.getVideoDirect(1);
 		System.out.println(string);
 	}
 	
 	@Test
 	public void testDeleteVideoName(){
 		VideoDao videoDao = new VideoDao();
-		boolean flag = videoDao.deleteVideo("G:/video2/aa", "video100.mp4");
+		boolean flag = videoDao.deleteVideo("aa3", "video1.mp4");
 		if (flag) {
 			System.err.println("删除视频成功了！！");
 		}else {
@@ -64,41 +64,41 @@ public class VideoDao {
 	}
 	
 	/**
-	 * 在数据库中增加一条视频记录
-	 * @param direct
+	 * 在数据库中video表增加一条视频记录
+	 * @param producerId
 	 * @param name
 	 * @return
 	 */
-	public boolean addVideoPath(String direct, String name) {
-		int id = getVideoDir(direct);
+	public boolean addVideoPath(String producerId, String name) {
+		int id = getVideoDir(producerId);
 		if (id == -1) {
-			addVideoDir(direct);
-			id = getVideoDir(direct);
+			addVideoDir(producerId);
+			id = getVideoDir(producerId);
 		}
-		String sql = "insert into video_name(id,name) values (?,?);";
+		String sql = "insert into video(id,name) values (?,?);";
 		Object[] args = new Object[] {id,name};
 		return jdbc.update(sql, args) != 0;
 	}
 
 	/**
-	 * 在数据库中video_direct表增加一个目录记录
+	 * 在数据库中producer表增加一个目录记录
 	 * @param direct
 	 * @return
 	 */
 	public boolean addVideoDir(String direct) {
-		String sql = "insert into video_direct(direct_path) values (?);";
+		String sql = "insert into producer(producer_id) values (?);";
 		Object[] args = new Object[] { direct };
 		return jdbc.update(sql,args) != 0;
 	}
 
 	/**
 	 * 根据目录名找到数据库中对应的id
-	 * @param direct
+	 * @param producerId
 	 * @return
 	 */
-	public int getVideoDir(String direct) {
-		String sql = "select id from video_direct where direct_path =?;";
-		Object[] args = new Object[] { direct };
+	public int getVideoDir(String producerId) {
+		String sql = "select id from producer where producer_id =?;";
+		Object[] args = new Object[] { producerId };
 		List<Map<String, Object>> list = jdbc.queryForList(sql, args);
 		if (list == null || list.isEmpty()) {
 			return -1;
@@ -110,29 +110,29 @@ public class VideoDao {
 	}
 	
 	/**
-	 * 获取数据库video_direct表中所有目录名
+	 * 获取数据库producer表中所有目录名
 	 * @return
 	 */
 	public List<String> getVideoDirs(){
-		String sql = "select direct_path from video_direct;";
+		String sql = "select producer_id from producer;";
 		List<Map<String, String>> list = jdbc.queryForList(sql);
 		List<String> results = new ArrayList<String>();
 		for (Map<String, String> map : list) {
-			String dir = map.get("direct_path");
+			String dir = map.get("producer_id");
 			results.add(dir);
 		}
 		return results;
 	}
 	
 	/**
-	 * 输入目录名，获取某个数据库中video_direct表的目录下的所有视频文件名
+	 * 输入目录名，获取某个数据库中producer表的目录下的所有视频文件名
 	 */
-	public List<String> getVideoNames(String dirPath){
-		int id = getVideoDir(dirPath);
+	public List<String> getVideoNames(String producerId){
+		int id = getVideoDir(producerId);
 		if (id == -1) {
 			return null;
 		}
-		String sql = "select name from video_name where id = ?;";
+		String sql = "select name from video where id = ?;";
 		Object[] args = new Object[]{id};
 		List<Map<String, String>> list = jdbc.queryForList(sql,args);
 		List<String> results = new ArrayList<String>();
@@ -149,7 +149,7 @@ public class VideoDao {
 	 * @return
 	 */
 	public int getVideoId(String videoName){
-		String sql = "select id from video_name where name = ?;";
+		String sql = "select id from video where name = ?;";
 		Object[] args = new Object[]{videoName};
 		List<Map<String, Object>> list = jdbc.queryForList(sql, args);
 		if (list == null || list.isEmpty()) {
@@ -162,21 +162,21 @@ public class VideoDao {
 	}
 	
 	/**
-	 * 输入id号，查询数据库中video_direct表中对应的目录名
+	 * 输入id号，查询数据库中producer表中对应的目录名producer_id
 	 * @param id
 	 * @return
 	 */
 	public String getVideoDirect(int id){
-		String sql = "select direct_path from video_direct where id = ?;";
+		String sql = "select producer_id from producer where id = ?;";
 		Object[] args = new Object[]{id};
 		List<Map<String, String>> list = jdbc.queryForList(sql,args);
 		List<String> results = new ArrayList<String>();
 		for (Map<String, String> map : list) {
-			String dir = map.get("direct_path");
+			String dir = map.get("producer_id");
 			results.add(dir);
 		}
 		if (results == null || results.isEmpty()) {
-			return "nothing";
+			return "error";
 		} else {
 			String path = results.get(0);
 			return path;
@@ -184,40 +184,36 @@ public class VideoDao {
 	}
 
 	/**
-	 * 输入目录名，删除数据库中video_direct表某个目录名记录
+	 * 输入目录名，删除数据库中producer表某个目录名记录
 	 * @param dirPath
 	 * @return
 	 */
-	public boolean deleteDirPath(String dirPath){
-		int id = getVideoDir(dirPath);
+	public boolean deleteDirPath(String producerId){
+		int id = getVideoDir(producerId);
 		if (id == -1) {
 			return true;
 		}
-		String sql = "delete from video_name where id = ?;";
+		String sql = "delete from video where id = ?;";
 		Object[] args = new Object[]{id};
 		jdbc.update(sql,args);
-		sql = "delete from video_direct where id = ?;";
+		sql = "delete from producer where id = ?;";
 		jdbc.update(sql,args);
-		File file = new File(dirPath);
-		deleteFile(file);
 		return true;
 	}
 	
 	/**
-	 * 输入文件名，删除数据库中video_name表中的视频文件记录
+	 * 输入目录名和文件名，删除数据库中video表中的视频文件记录
 	 * @param videoName
 	 * @return
 	 */
-	public boolean deleteVideo(String direct,String videoName){
-		int id = getVideoDir(direct);
+	public boolean deleteVideo(String producerId,String videoName){
+		int id = getVideoDir(producerId);
 		if (id == -1) {
 			return true;
 		}
-		String sql = "delete from video_name where id = ? and name = ?;";
+		String sql = "delete from video where id = ? and name = ?;";
 		Object[] args = new Object[]{id,videoName};
 		jdbc.update(sql,args);
-		File file = new File(direct + "/" + videoName);
-		deleteFile(file);
 		return true;
 	}
 	

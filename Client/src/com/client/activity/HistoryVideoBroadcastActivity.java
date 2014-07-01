@@ -52,7 +52,6 @@ public class HistoryVideoBroadcastActivity extends Activity{
 				String path = "http://192.168.253.1:8080/httpGetVideo/"+ catalogName +"/"+ videoName;
 				//String path = "http://192.168.253.1:8080/httpGetVideo/5a3bbe53835ffd43/LoveStory.mp4";
 				ConnectionDetector cd = new ConnectionDetector(HistoryVideoBroadcastActivity.this);
-				Log.e(TAG, "11111111111");
 				if(cd.isConnectingToInternet()){
 					MediaController mediaController = new MediaController(
 							HistoryVideoBroadcastActivity.this); // 通过videoView提供的uri函数借口播放服务器视频

@@ -22,9 +22,11 @@ public class CreateTables {
 	 */
 	@Test
 	public void createVideoDirect() {
-		String sql = "create table video_direct"
+		String sql = "create table producer"
 					+ "(id integer not null auto_increment primary key,"
-					+ "direct_path varchar(1024));";
+					+ "producer_id varchar(1024),"
+					+ "nickname varchar(1024),"
+					+ "passwd_hashvalue varchar(1024));";
 		try {
 			mDaoTemplate.update(sql);
 		} catch (SQLException e) {
@@ -37,9 +39,11 @@ public class CreateTables {
 	 */
 	@Test
 	public void createVideoDirect2() {
-		String sql = "create table video_direct"
+		String sql = "create table producer"
 				+ "(id integer not null auto_increment primary key,"
-				+ "direct_path varchar(1024));";
+				+ "producer_id varchar(1024),"
+				+ "nickname varchar(1024),"
+				+ "passwd_hashvalue varchar(1024));";
 		jdbc.update(sql);
 	}
 	
@@ -48,11 +52,11 @@ public class CreateTables {
 	 */
 	@Test
 	public void createVideoName() {
-		String sql = "create table video_name"
+		String sql = "create table video"
 				+ "(id int not null ,"
 				+ "name varchar(128)," 
 				+ "primary key(id,name)," 
-				+ "foreign key(id) references video_direct(id));";
+				+ "foreign key(id) references producer(id));";
 		try {
 			mDaoTemplate.update(sql);
 		} catch (SQLException e) {
@@ -66,11 +70,11 @@ public class CreateTables {
 	 */
 	@Test
 	public void createVideoName2() {
-		String sql = "create table video_name2"
+		String sql = "create table video"
 				+ "(id int not null ,"
 				+ "name varchar(128)," 
 				+ "primary key(id,name)," 
-				+ "foreign key(id) references video_direct(id));";
+				+ "foreign key(id) references producer(id));";
 		jdbc.update(sql);
 	}
 
