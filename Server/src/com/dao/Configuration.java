@@ -8,6 +8,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Properties;
 
+import com.server.utils.JdbcUtils;
+
 public class Configuration {
 
 	private static String config_name= "config.properties";
@@ -17,18 +19,20 @@ public class Configuration {
 	 * return null if property value not exists
 	 * @return
 	 */
-	public String getVideoDir(){
+	public static String getVideoDir(){
 		Properties prop = new Properties();
 		InputStream input = null;
 	 
 		try {
 	 
-			String dir= getClass().getClassLoader().getResource(".").getPath()
-					.replace(File.separator + "bin" + File.separator, 
-							File.separator + "src" + File.separator); // get the src dir of project
-	        File file = new File(dir + config_name);
-			input = new FileInputStream(file);
+//			String dir= getClass().getClassLoader().getResource(".").getPath()
+//					.replace(File.separator + "bin" + File.separator, 
+//							File.separator + "src" + File.separator); // get the src dir of project
+//	        File file = new File(dir + config_name);
+//			input = new FileInputStream(file);
 	 
+			input =JdbcUtils.class.getClassLoader()
+					.getResourceAsStream(config_name);
 			// load a properties file
 			prop.load(input);
 	 

@@ -182,6 +182,7 @@ public class Server {
 		return urlList;
 	}
 
+	//产生随机的端口号，分配给某个Producer的线程
 	private static synchronized int getRandomPort() {
 		return randomPort++;
 	}
