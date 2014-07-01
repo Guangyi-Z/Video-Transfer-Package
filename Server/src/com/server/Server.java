@@ -129,14 +129,14 @@ public class Server {
 						objectOutputStream.flush();
 					}else if(packetBean.getPacketType() == PacketBean.CATALOG_LIST){
 						List<String> catalogList = new ArrayList<String>();
-						VideoDao videoDao = new VideoDao();
-						catalogList = videoDao.getVideoDirs();
+						catalogList = getVideoDirs();
 						//System.out.println(catalogList.toString());
 						packetBean = new PacketBean(PacketBean.CATALOG_LIST,catalogList);
 						objectOutputStream.writeObject(packetBean);
 						objectOutputStream.flush();
 					}else if(packetBean.getPacketType() == PacketBean.VIDEO_LIST){
 						String dirPath = (String) packetBean.getData();
+						dirPath = dirPath.substring(dirPath.lastIndexOf("/")+1);//得到文件夹名称
 						List<String> VideoList = new ArrayList<String>();
 						VideoDao videoDao = new VideoDao();
 						VideoList = videoDao.getVideoNames(dirPath);
@@ -165,6 +165,21 @@ public class Server {
 				}
 			}
 		}
+	}
+
+	/**
+	 * 从数据库中获取出来的只有目录名，需要拼接上http主机名，作为一个url放回给客户端
+	 * @return
+	 */
+	private List<String> getVideoDirs() {
+		VideoDao videoDao = new VideoDao();
+		List<String> urlList = videoDao.getVideoDirs();
+		for (int i = 0;i<urlList.size();i++) {
+			String string = urlList.get(i);
+			string = "http://192.168.253.1:8080/httpGetVideo/"+string;
+			urlList.set(i, string);
+		}
+		return urlList;
 	}
 
 	private static synchronized int getRandomPort() {
